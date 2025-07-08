@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualiseur JSON HarmoS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.15/lib/codemirror.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.15/theme/material.css">
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.15/lib/codemirror.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.15/mode/javascript/javascript.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+
+  <!-- MathJax config pour $...$ inline -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        background-color: #121212;
+        color: #eee;
+        font-family: sans-serif;
+    }
+    #editorWrapper, #outputPreview {
+        width: 50%;
+        height: 100%;
+        overflow-y: auto;
+        box-sizing: border-box;
+        padding: 1rem;
+    }
+    #outputPreview {
+        background-color: #1e1e1e;
+        border-left: 1px solid #333;
+    }
+    .CodeMirror {
+        height: 100%;
+        font-family: monospace;
+        font-size: 14px;
+        background-color: #263238;
+        color: #eee;
+    }
+    </style>
+</head>
+<body>
+
+  <div id="editorWrapper">
+    <div style="color:#ccc; margin-bottom: 0.5rem; font-weight: bold;">
+      Collez ici votre JSON contenant les questions :
+    </div>
+    <textarea id="jsonInput"></textarea>
+  </div>     
+  <div id="outputPreview"><em>Les questions s'afficheront ici…</em></div>
+
+  <script>
+    const md = window.markdownit({ html: true });
+    const editor = CodeMirror.fromTextArea(document.getElementById("jsonInput"), {
+      mode: "application/json",
+      theme: "material",
+      lineNumbers: true,
+      tabSize: 2
+    });
+
+    editor.on("change", () => {
+      const output = document.getElementById("outputPreview");
+      try {
+        const data = JSON.parse(editor.getValue());
+        const rendered = data.map((q, i) => {
+          const answers = q.answers.map(a =>
+            `- ${a.content} ${a.is_correct ? '✅' : ''}`
+          ).join('\n');
+          return `### Question ${i + 1} (Niveau ${q.difficulty})\n\n${q.content}\n\n**Réponses :**\n${answers}`;
+        }).join('\n\n---\n\n');
+
+        output.innerHTML = md.render(rendered);
+        MathJax.typesetPromise();
+      } catch (e) {
+        output.innerHTML = "<em style='color: #f88'>JSON invalide…</em>";
+      }
+    });
+  </script>
+
+</body>
+</html>
