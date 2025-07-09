@@ -9,7 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.15/mode/javascript/javascript.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
 
-  <!-- MathJax config pour $...$ inline -->
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -17,34 +16,42 @@
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-    <style>
+  <style>
     body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        background-color: #121212;
-        color: #eee;
-        font-family: sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      background-color: #121212;
+      color: #eee;
+      font-family: sans-serif;
     }
     #editorWrapper, #outputPreview {
-        width: 50%;
-        height: 100%;
-        overflow-y: auto;
-        box-sizing: border-box;
-        padding: 1rem;
+      width: 50%;
+      height: 100%;
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 1rem;
     }
     #outputPreview {
-        background-color: #1e1e1e;
-        border-left: 1px solid #333;
+      background-color: #1e1e1e;
+      border-left: 1px solid #333;
     }
     .CodeMirror {
-        height: 100%;
-        font-family: monospace;
-        font-size: 14px;
-        background-color: #263238;
-        color: #eee;
+      height: 100%;
+      font-family: monospace;
+      font-size: 14px;
+      background-color: #263238;
+      color: #eee;
     }
-    </style>
+    #controls {
+      margin-top: 0.5rem;
+      color: #ccc;
+    }
+    #filename {
+      margin-left: 0.5rem;
+      padding: 0.2rem;
+    }
+  </style>
 </head>
 <body>
 
@@ -53,8 +60,14 @@
       Collez ici votre JSON contenant les questions :
     </div>
     <textarea id="jsonInput"></textarea>
-    <button id="saveJsonBtn" style="margin-top: 0.5rem;">💾 Enregistrer le JSON</button>
-  </div>     
+
+    <div id="controls">
+      <label for="filename">Nom du fichier :</label>
+      <input id="filename" value="questions_boost.json" />
+      <button id="saveJsonBtn">💾 Enregistrer le JSON</button>
+    </div>
+  </div>
+
   <div id="outputPreview"><em>Les questions s'afficheront ici…</em></div>
 
   <script>
@@ -85,15 +98,15 @@
     });
 
     document.getElementById("saveJsonBtn").addEventListener("click", () => {
+      const filename = document.getElementById("filename").value || "questions_boost.json";
       const blob = new Blob([editor.getValue()], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "questions_boost.json";
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     });
-
   </script>
 
 </body>
