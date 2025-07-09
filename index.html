@@ -53,6 +53,7 @@
       Collez ici votre JSON contenant les questions :
     </div>
     <textarea id="jsonInput"></textarea>
+    <button id="saveJsonBtn" style="margin-top: 0.5rem;">💾 Enregistrer le JSON</button>
   </div>     
   <div id="outputPreview"><em>Les questions s'afficheront ici…</em></div>
 
@@ -82,6 +83,17 @@
         output.innerHTML = "<em style='color: #f88'>JSON invalide…</em>";
       }
     });
+
+    document.getElementById("saveJsonBtn").addEventListener("click", () => {
+      const blob = new Blob([editor.getValue()], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "questions_boost.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
   </script>
 
 </body>
