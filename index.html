@@ -42,6 +42,8 @@
       font-size: 14px;
       background-color: #263238;
       color: #eee;
+      white-space: pre-wrap; /* This allows the text to wrap within the editor */
+      word-wrap: break-word; /* Ensures long lines break */
     }
     #controls {
       margin-top: 0.5rem;
@@ -65,12 +67,6 @@
       <button id="saveJsonBtn">💾 Enregistrer le JSON</button>
     </div>
     <textarea id="jsonInput"></textarea>
-
-    <div id="controls">
-      <label for="filename">Nom du fichier :</label>
-      <input id="filename" value="questions_boost.json" />
-      <button id="saveJsonBtn">💾 Enregistrer le JSON</button>
-    </div>
   </div>
 
   <div id="outputPreview"><em>Les questions s'afficheront ici…</em></div>
@@ -81,7 +77,8 @@
       mode: "application/json",
       theme: "material",
       lineNumbers: true,
-      tabSize: 2
+      tabSize: 2,
+      lineWrapping: true  // This will enable line wrapping in the CodeMirror editor
     });
 
     editor.on("change", () => {
